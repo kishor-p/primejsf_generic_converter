@@ -62,7 +62,10 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-maven-plugin</artifactId>
 			<configuration>
-		        <scanIntervalSeconds>2</scanIntervalSeconds>
+		        	<webAppConfig>
+						<contextPath>/primejsf_generic_converter</contextPath>
+					</webAppConfig>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
 		    </configuration>
 			<version>9.3.12-SNAPSHOT</version>
 		</plugin>
