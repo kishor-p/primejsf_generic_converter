@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.faces.context.FacesContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +25,7 @@ public class DBconnect implements Serializable{
 		newConnection = null;
 		 try {
 			Class.forName("org.sqlite.JDBC");
-			newConnection = DriverManager.getConnection("jdbc:sqlite:imdb.sqlite");
+			newConnection = DriverManager.getConnection("jdbc:sqlite:"+FacesContext.getCurrentInstance().getExternalContext().getRealPath("/db/imdb.sqlite"));
 		} catch (ClassNotFoundException | SQLException e) {
 			LOG.error("getConnection()-Error while creating the connection:",e);
 		}

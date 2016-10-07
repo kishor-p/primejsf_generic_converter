@@ -10,6 +10,13 @@
 
 <h:body>
 	<p:outputLabel>Generic Converter Exmaplex</p:outputLabel>
+	
+	<h:form>
+		<h:selectOneMenu>
+			<f:selectItems value="#{mBeanOne.first100List}" var="mov" 
+							itemLabel="#{mov.name}" itemValue="#{mov.uniqueId}"/>
+		</h:selectOneMenu>
+	</h:form>
 </h:body>
 	
 </html>
