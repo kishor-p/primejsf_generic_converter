@@ -42,33 +42,40 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+		<dependency>
+		    <groupId>org.xerial</groupId>
+		    <artifactId>sqlite-jdbc</artifactId>
+		    <version>3.14.2.1</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
 		<finalName>primejsf-helloworld</finalName>
     
-    <plugins>
-    	<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>2.1</version>
-			<configuration>
-				<source>1.7</source>
-				<target>1.7</target>
-			</configuration>
-		</plugin>
+    	<plugins>
+	    	<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
 		
-		<plugin>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<configuration>
-		        	<webAppConfig>
-						<contextPath>/primejsf_generic_converter</contextPath>
-					</webAppConfig>
-					<scanIntervalSeconds>5</scanIntervalSeconds>
-		    </configuration>
-			<version>9.3.12-SNAPSHOT</version>
-		</plugin>
-    </plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+			        	<webAppConfig>
+							<contextPath>/primejsf_generic_converter</contextPath>
+						</webAppConfig>
+						<scanIntervalSeconds>5</scanIntervalSeconds>
+			    </configuration>
+				<version>9.3.12-SNAPSHOT</version>
+			</plugin>
+   		</plugins>
 	</build>
 </project>
