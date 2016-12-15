@@ -1,4 +1,4 @@
-package kishorp.primejsf.genconv;
+package kishorp.primejsf.genconv.converter;
 
 import java.io.Serializable;
 import java.util.List;
