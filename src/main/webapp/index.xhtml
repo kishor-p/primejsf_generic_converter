@@ -9,12 +9,13 @@
 </h:head>
 
 <h:body>
-	<p:outputLabel>Generic Converter Exmaplex</p:outputLabel>
+	<p:outputLabel>Generic Converter Exmaple</p:outputLabel>
 	
 	<h:form>
-		<h:selectOneMenu>
-			<f:selectItems value="#{mBeanOne.first100List}" var="mov" 
-							itemLabel="#{mov.name}" itemValue="#{mov.uniqueId}"/>
+		<h:selectOneMenu converter="kishorp.primejsf.genconv.GenericMovieConverter" 
+							value="#{mBeanOne.selectedTop250Movie}" >
+			<p:ajax process="@this"/>
+			<f:selectItems value="#{mBeanOne.first100List}"  var="mov" itemLabel="#{mov.name}" itemValue="#{mov}"/>
 		</h:selectOneMenu>
 	</h:form>
 </h:body>
