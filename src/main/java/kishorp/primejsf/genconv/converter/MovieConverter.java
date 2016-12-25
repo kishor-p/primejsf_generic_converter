@@ -58,8 +58,10 @@ public class MovieConverter implements Serializable,Converter{
 	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object objValue) {
 
 		try{
-			Movie retMovie = (Movie)objValue;
-			return retMovie.getUniqueId();
+			if(null!=objValue){
+				Movie retMovie = (Movie)objValue;
+				return retMovie.getUniqueId();
+			}
 		}catch(Exception e){
 			LOG.error("getAsString()-Error while getting stirng from Object:",e);
 		}

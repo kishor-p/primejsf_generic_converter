@@ -6,89 +6,70 @@
 		xmlns:f="http://java.sun.com/jsf/core"
 		xmlns:p="http://primefaces.org/ui">
 <h:head>
+	<h:outputStylesheet name="primejsfgenericconv.css" library="css"></h:outputStylesheet>
 	<h:outputScript name="rainbow-custom.min.js" library="js"></h:outputScript>
 	<h:outputStylesheet name="github.css" library="css"></h:outputStylesheet>
 </h:head>
 
 <h:body>
-	<p:outputLabel>Generic Converter Exmaple</p:outputLabel>
-	
-	<h:form>
-		<h:selectOneMenu converter="kishorp.primejsf.genconv.GenericMovieConverter" 
-							value="#{mBeanOne.selectedTop250Movie}" >
-			<p:ajax process="@this"/>
-			<f:selectItems value="#{mBeanOne.first100List}"  var="mov" itemLabel="#{mov.name}" itemValue="#{mov}"/>
-		</h:selectOneMenu>
-	</h:form>
 
-	
-	<pre>
-<code data-language="java">
-package kishorp.primejsf.genconv.beans;
-
-import java.io.Serializable;
-
-public class Movie implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5383363279842049673L;
-	
-	private String uniqueId;
-	private String name;
-	private String year;
-	private float rating;
-	
-	public Movie(){}
-	
-	public Movie(String uniqueId, String name, String year, float rating) {
-		super();
-		this.uniqueId = uniqueId;
-		this.name = name;
-		this.year = year;
-		this.rating = rating;
-	}
-	
-	public String getUniqueId() {
-		return uniqueId;
-	}
-	public void setUniqueId(String uniqueId) {
-		this.uniqueId = uniqueId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getYear() {
-		return year;
-	}
-	public void setYear(String year) {
-		this.year = year;
-	}
-	public float getRating() {
-		return rating;
-	}
-	public void setRating(float rating) {
-		this.rating = rating;
-	}
-
-	@Override
-	public String toString() {
-		return "Movie [uniqueId=" + uniqueId + ", name=" + name + ", year="
-				+ year + ", rating=" + rating + "]";
-	}
-	
-	
-	
-
-}
+	<div class="main-content">
+		<div class="ui-fluid">
+			<p:panelGrid layout="grid" columns="1">
+				Generic converter Example
+			</p:panelGrid>
+			
+			<p:panelGrid layout="grid" columns="2" >
+				<h:form id="form1">
+					<p:panelGrid layout="grid" columns="2" id="selOneMenuPanelGroup">
+						<f:facet name="header">
+							Using p:selectOneMenu
+						</f:facet>
+						
+						<p:outputLabel value="IMDB Top 250 Movies:"/>
+						<p:selectOneMenu converter="kishorp.primejsf.genconv.GenericMovieConverter" 
+											value="#{mBeanOne.selectedTop250Movie}" >
+							<p:ajax process="@this" update="selOneMenuPanelGroup"/>
+							<f:selectItem noSelectionOption="true" itemLabel="Select A Movie"/>
+							<f:selectItems value="#{mBeanOne.top250MovieList}"  var="mov" itemLabel="#{mov.name}" itemValue="#{mov}"/>
+						</p:selectOneMenu>
+						
+						<h:outputLabel value="Movie Name:"/>
+						<h:outputText value="#{mBeanOne.selectedTop250Movie.name}"/>
+						
+						<h:outputLabel value="Movie Year:"/>
+						<h:outputText value="#{mBeanOne.selectedTop250Movie.year}"/>
+						
+						<h:outputLabel value="IMDB Rating:"/>
+						<h:outputText value="#{mBeanOne.selectedTop250Movie.rating}"/>
+					</p:panelGrid>
+				</h:form>
 				
-  	</code>
-    </pre>
-	
+				<h:form id="form2">
+					<p:panelGrid layout="grid" columns="2">
+						<f:facet name="header">
+							Using p:selectOneList
+						</f:facet>
+						
+						<p:outputLabel value="Filter Movies by Rating:"/>
+						<p:rating value="#{mBeanOne.searchRating}" stars="10">
+							<p:ajax listener="#{mBeanOne.filterMovies}" update="filteredMoviesList"/>
+						</p:rating>
+						
+						<p:outputLabel value="Filtered Movies:"/>
+						<h:selectOneListbox converter="kishorp.primejsf.genconv.GenericMovieConverter" 
+											id="filteredMoviesList" style="height:68px;width:100%" styleClass="xx">
+							<f:selectItems value="#{mBeanOne.filteredMoviesList}"  var="mov" itemLabel="#{mov.name}" itemValue="#{mov}"/>
+						</h:selectOneListbox>
+					</p:panelGrid>
+				</h:form>
+			</p:panelGrid>
+			
+			<p:panelGrid layout="grid" columns="1">
+				<ui:include src="/codeDisplay.xhtml"></ui:include>
+			</p:panelGrid>
+		</div>
+	</div>
 	
 </h:body>
 	

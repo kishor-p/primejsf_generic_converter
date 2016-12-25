@@ -1,0 +1,305 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:p="http://primefaces.org/ui">
+<h:body>
+<p:tabView>
+
+<p:tab title="index.xhtml">
+<pre style="overflow: auto">
+<code data-language="html" style="word-wrap: break-word;">
+&lt;h:form id=&quot;form1&quot;&gt;
+	&lt;p:panelGrid layout=&quot;grid&quot; columns=&quot;2&quot; id=&quot;selOneMenuPanelGroup&quot;&gt;
+		&lt;f:facet name=&quot;header&quot;&gt;
+			Using p:selectOneMenu
+		&lt;/f:facet&gt;
+		
+		&lt;p:outputLabel value=&quot;IMDB Top 250 Movies:&quot;/&gt;
+		&lt;p:selectOneMenu converter=&quot;kishorp.primejsf.genconv.GenericMovieConverter&quot; 
+							value=&quot;\#{mBeanOne.selectedTop250Movie}&quot; &gt;
+			&lt;p:ajax process=&quot;@this&quot; update=&quot;selOneMenuPanelGroup&quot;/&gt;
+			&lt;f:selectItem noSelectionOption=&quot;true&quot; itemLabel=&quot;Select A Movie&quot;/&gt;
+			&lt;f:selectItems value=&quot;\#{mBeanOne.top250MovieList}&quot;  var=&quot;mov&quot; itemLabel=&quot;\#{mov.name}&quot; itemValue=&quot;\#{mov}&quot;/&gt;
+		&lt;/p:selectOneMenu&gt;
+		
+		&lt;h:outputLabel value=&quot;Movie Name:&quot;/&gt;
+		&lt;h:outputText value=&quot;\#{mBeanOne.selectedTop250Movie.name}&quot;/&gt;
+		
+		&lt;h:outputLabel value=&quot;Movie Year:&quot;/&gt;
+		&lt;h:outputText value=&quot;\#{mBeanOne.selectedTop250Movie.year}&quot;/&gt;
+		
+		&lt;h:outputLabel value=&quot;IMDB Rating:&quot;/&gt;
+		&lt;h:outputText value=&quot;\#{mBeanOne.selectedTop250Movie.rating}&quot;/&gt;
+	&lt;/p:panelGrid&gt;
+&lt;/h:form&gt;
+
+&lt;h:form id=&quot;form2&quot;&gt;
+	&lt;p:panelGrid layout=&quot;grid&quot; columns=&quot;2&quot;&gt;
+		&lt;f:facet name=&quot;header&quot;&gt;
+			Using p:selectOneList
+		&lt;/f:facet&gt;
+		
+		&lt;p:outputLabel value=&quot;Filter Movies by Rating:&quot;/&gt;
+		&lt;p:rating value=&quot;\#{mBeanOne.searchRating}&quot; stars=&quot;10&quot;&gt;
+			&lt;p:ajax listener=&quot;\#{mBeanOne.filterMovies}&quot; update=&quot;filteredMoviesList&quot;/&gt;
+		&lt;/p:rating&gt;
+		
+		&lt;p:outputLabel value=&quot;Filtered Movies:&quot;/&gt;
+		&lt;h:selectOneListbox converter=&quot;kishorp.primejsf.genconv.GenericMovieConverter&quot; 
+							id=&quot;filteredMoviesList&quot; style=&quot;height:68px;width:100%&quot; styleClass=&quot;xx&quot;&gt;
+			&lt;f:selectItems value=&quot;\#{mBeanOne.filteredMoviesList}&quot;  var=&quot;mov&quot; itemLabel=&quot;\#{mov.name}&quot; itemValue=&quot;\#{mov}&quot;/&gt;
+		&lt;/h:selectOneListbox&gt;
+	&lt;/p:panelGrid&gt;
+&lt;/h:form&gt;
+</code>
+</pre>
+</p:tab>
+
+<p:tab title="MovieConverter.java">
+<pre style="overflow: auto">
+<code data-language="java">
+package kishorp.primejsf.genconv.converter;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UISelectItems;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
+
+import kishorp.primejsf.genconv.beans.Movie;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@FacesConverter(&quot;kishorp.primejsf.genconv.GenericMovieConverter&quot;)
+public class MovieConverter implements Serializable,Converter{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1331408671220587105L;
+	private final Logger LOG = LoggerFactory.getLogger(MovieConverter.class);
+
+	@Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String strValue) {
+		
+		try{
+			List&lt;UIComponent&gt; childComponents = uiComponent.getChildren();
+		
+			if(null != childComponents){
+				for(UIComponent tempchild : childComponents){
+					if(tempchild instanceof UISelectItems){
+						UISelectItems selectItems = (UISelectItems)tempchild;
+						List&lt;Movie&gt; sourceList = (List&lt;Movie&gt;) selectItems.getValue();
+						
+						for(Movie travMovie : sourceList){
+							if(travMovie.getUniqueId().equals(strValue)){
+								return travMovie;
+							}
+						}
+					}else{
+						LOG.info(&quot;The Component does not contain any child of type UISelectItems&quot;);
+					}
+				}
+			}else{
+				LOG.info(&quot;The Component does not contain any child elements&quot;);
+			}
+		}catch(Exception e){
+			LOG.error(&quot;getAsObject-Error while acquiring the SOURCE_MOVIE_LIST from Component attribute:&quot;,e);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object objValue) {
+
+		try{
+			if(null!=objValue){
+				Movie retMovie = (Movie)objValue;
+				return retMovie.getUniqueId();
+			}
+		}catch(Exception e){
+			LOG.error(&quot;getAsString()-Error while getting stirng from Object:&quot;,e);
+		}
+		return null;
+	}
+
+}
+</code>
+</pre>
+</p:tab>
+
+	<p:tab title="MBeanOne.java">
+<pre style="overflow: auto">
+<code data-language="java">
+package kishorp.primejsf.genconv.mbeans;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
+
+import kishorp.primejsf.genconv.beans.Movie;
+import kishorp.primejsf.genconv.dbutils.DBFactory;
+import kishorp.primejsf.genconv.dbutils.Imdb;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@ManagedBean
+@ViewScoped
+public class MBeanOne implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9152136570475398702L;
+	private final Logger LOG = LoggerFactory.getLogger(MBeanOne.class);
+	
+	private List&lt;Movie&gt; top250MovieList;
+	private Imdb imdb = new DBFactory().getImdb();
+	private Movie selectedTop250Movie;
+	
+	private int searchRating;
+	private List&lt;Movie&gt; filteredMoviesList;
+	
+
+	
+	@PostConstruct
+	public void init(){
+		LOG.info(&quot;Initializing @PostContsruct&quot;);
+		setTop250MovieList(new ArrayList&lt;&gt;(imdb.listTop250Movies()));
+		
+	}
+
+	public void filterMovies(){
+		filteredMoviesList = imdb.filterMovieByRating(new Float(searchRating));
+	}
+
+	public Movie getSelectedTop250Movie() {
+		return selectedTop250Movie;
+	}
+
+
+	public void setSelectedTop250Movie(Movie selectedTop250Movie) {
+		this.selectedTop250Movie = selectedTop250Movie;
+	}
+	
+	public void listen(ActionEvent event){
+		System.out.println(event.getComponent().getAttributes().keySet());
+		
+	}
+
+
+	public int getSearchRating() {
+		return searchRating;
+	}
+
+
+	public void setSearchRating(int searchRating) {
+		this.searchRating = searchRating;
+	}
+
+
+	public List&lt;Movie&gt; getTop250MovieList() {
+		return top250MovieList;
+	}
+
+
+	public void setTop250MovieList(List&lt;Movie&gt; top250MovieList) {
+		this.top250MovieList = top250MovieList;
+	}
+
+
+	public List&lt;Movie&gt; getFilteredMoviesList() {
+		return filteredMoviesList;
+	}
+
+
+	public void setFilteredMoviesList(List&lt;Movie&gt; filteredMoviesList) {
+		this.filteredMoviesList = filteredMoviesList;
+	}
+
+}
+</code>
+</pre>		
+</p:tab>
+
+<p:tab title="Movie.java">
+<pre style="overflow: auto">
+<code data-language="java">
+package kishorp.primejsf.genconv.beans;
+
+import java.io.Serializable;
+
+public class Movie implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5383363279842049673L;
+	
+	private String uniqueId;
+	private String name;
+	private String year;
+	private float rating;
+	
+	public Movie(){}
+	
+	public Movie(String uniqueId, String name, String year, float rating) {
+		super();
+		this.uniqueId = uniqueId;
+		this.name = name;
+		this.year = year;
+		this.rating = rating;
+	}
+	
+	public String getUniqueId() {
+		return uniqueId;
+	}
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
+	public float getRating() {
+		return rating;
+	}
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+
+	@Override
+	public String toString() {
+		return &quot;Movie [uniqueId=&quot; + uniqueId + &quot;, name=&quot; + name + &quot;, year=&quot;
+				+ year + &quot;, rating=&quot; + rating + &quot;]&quot;;
+	}
+}
+
+</code>
+</pre>
+</p:tab>	
+
+</p:tabView>
+
+</h:body>
+</ui:composition>

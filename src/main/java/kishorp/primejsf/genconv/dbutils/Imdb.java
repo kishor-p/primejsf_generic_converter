@@ -8,5 +8,6 @@ import kishorp.primejsf.genconv.beans.Movie;
 public interface Imdb extends Serializable{
 	
 	List<Movie> listTop250Movies();
+	List<Movie> filterMovieByRating(float rating);
 
 }
