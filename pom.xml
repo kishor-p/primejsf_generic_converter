@@ -52,7 +52,7 @@
 	</dependencies>
 	
 	<build>
-		<finalName>primejsf-helloworld</finalName>
+		<finalName>primejsf_generic_converter</finalName>
     
     	<plugins>
 	    	<plugin>
