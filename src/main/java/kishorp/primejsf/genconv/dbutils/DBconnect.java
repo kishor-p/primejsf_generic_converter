@@ -1,6 +1,7 @@
 package kishorp.primejsf.genconv.dbutils;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,9 +25,11 @@ public class DBconnect implements Serializable{
 	public Connection getConnection(){
 		newConnection = null;
 		 try {
+			String conUrl = "jdbc:sqlite::resource:"+FacesContext.getCurrentInstance().getExternalContext().getResource("/db/imdb.sqlite");
+			LOG.info("Conn URL:"+conUrl);
 			Class.forName("org.sqlite.JDBC");
-			newConnection = DriverManager.getConnection("jdbc:sqlite:"+FacesContext.getCurrentInstance().getExternalContext().getRealPath("/db/imdb.sqlite"));
-		} catch (ClassNotFoundException | SQLException e) {
+			newConnection = DriverManager.getConnection(conUrl);
+		} catch (ClassNotFoundException | SQLException | MalformedURLException e) {
 			LOG.error("getConnection()-Error while creating the connection:",e);
 		}
 		 
