@@ -15,3 +15,6 @@ mvn jetty:run              -- run showcase project locally
 ```
 
 ###Live Demo
+You can see the Live Demo of this application at following link:          
+
+http://jumpintojsf-thegrid.rhcloud.com/
