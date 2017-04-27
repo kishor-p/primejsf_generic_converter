@@ -5,7 +5,7 @@ Usually it is required to write a individual converter for each component whenev
 
 So this converter is written to remove that overhead. Using this technique we can write one Generic Converter for one type of POJO which can be used for all the Selection Components which makes use of same POJO, rathere than writing same POJO converter each component.
 
-###Building from sources
+### Building from sources
 ```
 git clone https://github.com/kishor-p/primejsf_generic_converter.git
 cd primejsf_helloworld
@@ -14,7 +14,7 @@ mvn package                -- create war file (under target directory)
 mvn jetty:run              -- run showcase project locally
 ```
 
-###Live Demo
+### Live Demo
 You can see the Live Demo of this application at following link:          
 
 http://jumpintojsf-thegrid.rhcloud.com/
